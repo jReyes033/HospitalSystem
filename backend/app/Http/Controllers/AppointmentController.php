@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AppointmentController extends Controller
 {
@@ -12,7 +13,18 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        //
+        $appointments = Appointment::all();
+        if ($appointments->count() > 0) {
+            return response()->json([
+                'status' => 200,
+                'Appointments' => $appointments
+            ],200);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'Message' => 'No Records Found'
+            ],404);
+        }
     }
 
     /**
@@ -28,15 +40,54 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate = Validator::make($request->all(), 
+        [
+            'time' => 'required'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'status' => 400,
+                'errors' => $validate->messages()
+            ], 400);
+        } 
+
+        try {
+            Appointment::create([
+                'time' => $request->time
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                'message' => "Appointment Created Succesfully"
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => "Something went wrong: " . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Appointment $appointment)
+    public function show(string $id)
     {
-        //
+        $appointment = Appointment::find($id);
+
+        if ($appointment) {
+            return response()->json([
+                'status' => 200,
+                'appointment' => $appointment
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'message' => "No user found."
+            ], 404);
+        }
     }
 
     /**
@@ -50,16 +101,58 @@ class AppointmentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Appointment $appointment)
+    public function update(Request $request, string $id)
     {
-        //
+        $validate = Validator::make($request->all(), 
+        [
+            'time' => 'required'
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json([
+                'status' => 400,
+                'errors' => $validate->messages()
+            ], 400);
+        } 
+
+        try {
+            $appointment = Appointment::find($id);
+
+            $appointment->update([
+                'time' => $request->time
+            ]);
+
+            return response()->json([
+                'status' => 200,
+                'message' => "Appointment updated Succesfully"
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => "Something went wrong: " . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Appointment $appointment)
+    public function destroy(string $id)
     {
-        //
+        $appointment = Appointment::find($id);
+
+        if ($appointment) {
+            $appointment->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => "Appointment deleted succesfully"
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'message' => "No valid appointment to delete."
+            ], 404);
+        }
     }
 }
