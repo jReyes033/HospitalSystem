@@ -37,9 +37,9 @@ export default {
           password: this.password
         });
         const token = response.data.token;
-        const userType = response.data.user.userType;
+        const user = response.data.user;
         localStorage.setItem('token', token);
-        localStorage.setItem('userType', userType);
+        localStorage.setItem('user', JSON.stringify(user));
         this.$router.push('/dashboard'); // Redirect to dashboard or another page
       } catch (err) {
         this.error = 'Login failed. Please check your credentials and try again.';

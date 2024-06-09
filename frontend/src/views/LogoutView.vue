@@ -10,7 +10,7 @@
     mounted() {
       // Clear token and userType from local storage
       localStorage.removeItem('token');
-      localStorage.removeItem('userType');
+      localStorage.removeItem('user');
       
       // Redirect to login page
       this.$router.push('/login');

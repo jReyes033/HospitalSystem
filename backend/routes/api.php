@@ -61,9 +61,9 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
 
     // MEDICAL RECORD CRUD
 
-    Route::get('record', [MedicalRecordController::class, 'index']);
-    Route::post('record', [MedicalRecordController::class,'store']);
-    Route::get('record/{id}', [MedicalRecordController::class,'show']);
-    Route::put('record/{id}', [MedicalRecordController::class,'update']);
-    Route::delete('record/{id}', [MedicalRecordController::class,'destroy']);
+    Route::get('medical_records', [MedicalRecordController::class, 'index']);
+    Route::post('medical_records', [MedicalRecordController::class,'store']);
+    Route::get('medical_records/{id}', [MedicalRecordController::class,'show']);
+    Route::put('medical_records/{id}', [MedicalRecordController::class,'update']);
+    Route::delete('medical_records/{id}', [MedicalRecordController::class,'destroy']);
 });

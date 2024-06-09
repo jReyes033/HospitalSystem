@@ -13,17 +13,20 @@ class MedicalRecordController extends Controller
      */
     public function index()
     {
-        $medicalRecords = MedicalRecord::all();
+        $medicalRecords = MedicalRecord::leftjoin('users as patients', 'medical_records.patientID', '=', 'patients.id')
+        ->select('medical_records.*', 'patients.name as PatientName')
+        ->get();
+
         if ($medicalRecords->count() > 0) {
             return response()->json([
                 'status' => 200,
-                'medicalRecords' => $medicalRecords
+                'MedicalRecords' => $medicalRecords
             ],200);
         } else {
             return response()->json([
                 'status' => 404,
                 'Message' => 'No Records Found'
-            ],404);
+            ],404); 
         }
     }
 

@@ -17,7 +17,7 @@ class UserController extends Controller
         if ($account->count() > 0) {
             return response()->json([
                 'status' => 200,
-                'UserAccount' => $account
+                'UserAccounts' => $account
             ],200);
         } else {
             return response()->json([

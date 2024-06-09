@@ -26,7 +26,7 @@ class AuthController extends Controller
                 'status' => 200,
                 'message' => 'Login successful',
                 'user' => $user,
-                'token' => $token,
+                'token' => $token
             ], 200);
         } else {
             // Authentication failed

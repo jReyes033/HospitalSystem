@@ -2,6 +2,8 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import DoctorManagement from '../components/DoctorManagement.vue';
 import PatientManagement  from '@/components/PatientManagement.vue';
 import AppointmentManagement from '@/components/AppointmentManagement.vue';
+import UserManagement from '@/components/UserManagement.vue';
+import MedicalRecordManagement from '@/components/MedicalRecordManagement.vue';
 
 const routes = [
   {
@@ -30,6 +32,18 @@ const routes = [
     path: '/appointments',
     name: 'AppointmentManagement',
     component: AppointmentManagement,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/medicalrecords',
+    name: 'MedicalRecordManagement',
+    component: MedicalRecordManagement,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/users',
+    name: 'UserManagement',
+    component: UserManagement,
     meta: { requiresAuth: true }
   },
   {
