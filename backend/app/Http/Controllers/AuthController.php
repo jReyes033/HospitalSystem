@@ -37,6 +37,15 @@ class AuthController extends Controller
         }
     }
 
+    public function logout(Request $request)
+    {
+        // Get the currently authenticated user's token and delete it
+        $request->user()->currentAccessToken()->delete();
+
+        // Return a response indicating that the logout was successful
+        return response()->json(['message' => 'Logged out successfully'], 200);
+    }
+
     public function register(Request $request) {
         $validate = Validator::make($request->all(), 
         [
