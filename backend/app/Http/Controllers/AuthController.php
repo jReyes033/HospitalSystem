@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function Login(Request $request) {
+    public function login(Request $request) {
         // Validate request data
         $validatedData = $request->validate([
             'email' => 'required|string|email|max:191',
