@@ -1,5 +1,5 @@
 <template>
-    <DoctorManagement/>
+    <DoctorManagement />
 </template>
 
 <script>

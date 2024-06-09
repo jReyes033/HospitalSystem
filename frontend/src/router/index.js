@@ -1,5 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import DoctorManagement from '../components/DoctorManagement.vue';
+import PatientManagement  from '@/components/PatientManagement.vue';
+import AppointmentManagement from '@/components/AppointmentManagement.vue';
 
 const routes = [
   {
@@ -13,15 +15,33 @@ const routes = [
     component: () => import('../views/RegisterView.vue')
   },
   {
-    path: '/doctor',
+    path: '/doctors',
     name: 'DoctorManagement',
     component: DoctorManagement,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/patients',
+    name: 'PatientManagement',
+    component: PatientManagement,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/appointments',
+    name: 'AppointmentManagement',
+    component: AppointmentManagement,
     meta: { requiresAuth: true }
   },
   {
     path: '/dashboard',
     name: 'dashboard',
     component: () => import('../views/DashboardView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/logout',
+    name: 'logout',
+    component: () => import('../views/LogoutView.vue'),
     meta: { requiresAuth: true }
   },
   // Add other protected routes here

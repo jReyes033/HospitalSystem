@@ -114,7 +114,7 @@ class DoctorController extends Controller
         [
             'name' => 'required | string | max:191',
             'email' => 'required|string|email|max:191|',
-            'password' => 'required | string | min:8 | max:191',
+            'password' => 'string | min:8 | max:191',
             'userType' => 'required'
         ]);
 

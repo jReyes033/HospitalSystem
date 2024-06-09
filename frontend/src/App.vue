@@ -1,5 +1,5 @@
 <template>
-  <router-view/>
+  <router-view />
 </template>
 
 <script>
@@ -25,5 +25,9 @@ nav a {
 
 nav a.router-link-exact-active {
   color: #42b983;
+}
+
+.table > tbody > tr > td {
+     vertical-align: middle;
 }
 </style>

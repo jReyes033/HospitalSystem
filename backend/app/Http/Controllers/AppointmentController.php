@@ -13,7 +13,11 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        $appointments = Appointment::all();
+        $appointments = Appointment::join('users as patients', 'appointments.patientID', '=', 'patients.id')
+        ->join('users as doctors', 'appointments.doctorID', '=', 'doctors.id')
+        ->select('appointments.*','patients.name as PatientName','doctors.name as DoctorName')
+        ->get();
+
         if ($appointments->count() > 0) {
             return response()->json([
                 'status' => 200,
@@ -42,7 +46,10 @@ class AppointmentController extends Controller
     {
         $validate = Validator::make($request->all(), 
         [
-            'time' => 'required'
+            'time' => 'required',
+            'patientID' => 'required',
+            'doctorID' => 'required',
+            'status' => 'required'
         ]);
 
         if ($validate->fails()) {
@@ -54,7 +61,10 @@ class AppointmentController extends Controller
 
         try {
             Appointment::create([
-                'time' => $request->time
+                'time' => $request->time,
+                'patientID' => $request->patientID,
+                'doctorID' => $request->doctorID,
+                'status' => $request->status
             ]);
 
             return response()->json([
@@ -105,7 +115,10 @@ class AppointmentController extends Controller
     {
         $validate = Validator::make($request->all(), 
         [
-            'time' => 'required'
+            'time' => 'required',
+            'patientID' => 'required',
+            'doctorID' => 'required',
+            'status' => 'required'
         ]);
 
         if ($validate->fails()) {
@@ -119,7 +132,10 @@ class AppointmentController extends Controller
             $appointment = Appointment::find($id);
 
             $appointment->update([
-                'time' => $request->time
+                'time' => $request->time,
+                'patientID' => $request->patientID,
+                'doctorID' => $request->doctorID,
+                'status' => $request->status
             ]);
 
             return response()->json([
