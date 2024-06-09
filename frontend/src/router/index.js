@@ -7,6 +7,11 @@ import MedicalRecordManagement from '@/components/MedicalRecordManagement.vue';
 
 const routes = [
   {
+    path: '/',
+    name: 'landing',
+    component: () => import('../views/LoginView.vue')
+  },
+  {
     path: '/login',
     name: 'login',
     component: () => import('../views/LoginView.vue')

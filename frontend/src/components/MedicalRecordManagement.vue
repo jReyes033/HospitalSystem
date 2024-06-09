@@ -9,7 +9,7 @@
                     <th>ID</th>
                     <th>Patient Name</th>
                     <th>Details</th>
-                    <th>Actions</th>
+                    <!-- <th v-if="isAdmin || isDoctor" >Actions</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -18,8 +18,8 @@
                     <td>{{ record.PatientName }}</td>
                     <td>{{ record.RecordDetails }}</td>
                     <td>
-                        <button class="btn btn-warning btn-sm m-1" @click="editMedicalRecord(record)">Edit</button>
-                        <button class="btn btn-danger btn-sm m-1" @click="deleteMedicalRecord(record)">Delete</button>
+                        <button v-if="isAdmin || isDoctor" class="btn btn-warning btn-sm m-1" @click="editMedicalRecord(record)">Edit</button>
+                        <button v-if="isAdmin" class="btn btn-danger btn-sm m-1" @click="deleteMedicalRecord(record)">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -42,7 +42,8 @@
                 </div>
                 <div class="form-group">
                     <label for="recordDetails">Record Details:</label>
-                    <textarea type="text" class="form-control" id="newRecordDetails" v-model="newMedicalRecordData.RecordDetails"></textarea>
+                    <textarea type="text" class="form-control" id="newRecordDetails"
+                        v-model="newMedicalRecordData.RecordDetails"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary m-1">Add Record</button>
             </form>
@@ -66,7 +67,8 @@
                 </div>
                 <div class="form-group">
                     <label for="recordDetails">Record Details:</label>
-                    <textarea type="text" class="form-control" id="newRecordDetails" v-model="editMedicalRecordData.RecordDetails"></textarea>
+                    <textarea type="text" class="form-control" id="newRecordDetails"
+                        v-model="editMedicalRecordData.RecordDetails"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary m-1">Update Record</button>
             </form>
@@ -89,6 +91,7 @@ export default {
         return {
             records: [],
             patients: [],
+            user: '',
             showAddMedicalRecord: false,
             showEditMedicalRecord: false,
             newMedicalRecordData: {
@@ -102,35 +105,99 @@ export default {
             },
         };
     },
+    computed: {
+        isAdmin() {
+            return this.user && this.user.userType === 'admin';
+        },
+        isDoctor() {
+            return this.user && this.user.userType === 'doctor';
+        },
+        isPatient() {
+            return this.user && this.user.userType === 'patient';
+        },
+    },
     mounted() {
         this.fetchAllMedicalRecords();
         this.fetchPatients();
     },
+    created() {
+        this.loadUserFromLocalStorage();
+    },
     methods: {
         fetchAllMedicalRecords() {
-            fetch('http://127.0.0.1:8000/api/medical_records', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    this.records = data.MedicalRecords;
+            if (this.isAdmin) {
+                fetch('http://127.0.0.1:8000/api/medical_records', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
                 })
-                .catch(err => {
-                    if (err.response) {
-                        this.error = `Error: ${err.response.data.message}`;
-                        console.error(err.response.data);
-                    } else if (err.request) {
-                        this.error = 'No response from server. Please try again later.';
-                        console.error(err.request);
-                    } else {
-                        this.error = 'Request error. Please check your input and try again.';
-                        console.error('Error', err.message);
-                    }
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        this.records = data.MedicalRecords;
+                    })
+                    .catch(err => {
+                        if (err.response) {
+                            this.error = `Error: ${err.response.data.message}`;
+                            console.error(err.response.data);
+                        } else if (err.request) {
+                            this.error = 'No response from server. Please try again later.';
+                            console.error(err.request);
+                        } else {
+                            this.error = 'Request error. Please check your input and try again.';
+                            console.error('Error', err.message);
+                        }
+                    });
+            } else if (this.isPatient) {
+                fetch('http://127.0.0.1:8000/api/medical_records?patientID=' + this.user.id, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.records = data.MedicalRecords;
+                    })
+                    .catch(err => {
+                        if (err.response) {
+                            this.error = `Error: ${err.response.data.message}`;
+                            console.error(err.response.data);
+                        } else if (err.request) {
+                            this.error = 'No response from server. Please try again later.';
+                            console.error(err.request);
+                        } else {
+                            this.error = 'Request error. Please check your input and try again.';
+                            console.error('Error', err.message);
+                        }
+                    });
+            } else if (this.isDoctor) {
+                fetch('http://127.0.0.1:8000/api/medical_records', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.records = data.MedicalRecords;
+                    })
+                    .catch(err => {
+                        if (err.response) {
+                            this.error = `Error: ${err.response.data.message}`;
+                            console.error(err.response.data);
+                        } else if (err.request) {
+                            this.error = 'No response from server. Please try again later.';
+                            console.error(err.request);
+                        } else {
+                            this.error = 'Request error. Please check your input and try again.';
+                            console.error('Error', err.message);
+                        }
+                    });
+            }
         },
         fetchPatients() {
             fetch('http://127.0.0.1:8000/api/patient', {
@@ -173,6 +240,8 @@ export default {
                 console.error('There was an error adding the product:', error);
             }
             this.fetchAllMedicalRecords();
+            this.newMedicalRecordData = [];
+            this.showAddMedicalRecord = false;
         },
         editMedicalRecord(record) {
             this.editMedicalRecordData = { ...record };
@@ -204,7 +273,13 @@ export default {
             } catch (error) {
                 console.error('There was an error deleting the product:', error);
             }
-        }
+        },
+        loadUserFromLocalStorage() {
+            const user = localStorage.getItem('user');
+            if (user) {
+                this.user = JSON.parse(user);
+            }
+        },
     }
 };
 </script>

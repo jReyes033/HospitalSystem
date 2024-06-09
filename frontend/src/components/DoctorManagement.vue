@@ -42,7 +42,7 @@
                 </div>
                 <div class="form-group">
                     <label for="newDoctorPassword">Password</label>
-                    <input type="text" class="form-control" id="newDoctorPassword" v-model="newDoctorData.password">
+                    <input type="password" class="form-control" id="newDoctorPassword" v-model="newDoctorData.password">
                 </div>
                 <button type="submit" class="btn btn-primary">Add</button>
             </form>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="form-group">
                     <label for="newDoctorPassword">Password</label>
-                    <input type="text" class="form-control" id="newDoctorPassword" v-model="editDoctorData.password">
+                    <input type="password" class="form-control" id="newDoctorPassword" v-model="editDoctorData.password">
                 </div>
                 <button type="submit" class="btn btn-primary m-1">Update</button>
             </form>

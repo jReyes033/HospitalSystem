@@ -1,5 +1,5 @@
 <template>
-    <DashboardView/>
+    <DashboardView />
     <div class="hello">
         <h1>Patient Management</h1>
         <button class="btn btn-info btn-sm m-1" @click="addPatient()">Add a Patient</button>
@@ -18,8 +18,10 @@
                     <td>{{ patient.name }}</td>
                     <td>{{ patient.email }}</td>
                     <td>
-                        <button class="btn btn-warning btn-sm m-1" @click="editPatient(patient)">Edit</button>
-                        <button class="btn btn-danger btn-sm m-1" @click="deletePatient(patient)">Delete</button>
+                        <button v-if="isAdmin || isDoctor" class="btn btn-warning btn-sm m-1"
+                            @click="editPatient(patient)">Edit</button>
+                        <button v-if="isAdmin" class="btn btn-danger btn-sm m-1"
+                            @click="deletePatient(patient)">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -42,7 +44,8 @@
                 </div>
                 <div class="form-group">
                     <label for="newPatientPassword">Password</label>
-                    <input type="text" class="form-control" id="newPatientPassword" v-model="newPatientData.password">
+                    <input type="password" class="form-control" id="newPatientPassword"
+                        v-model="newPatientData.password">
                 </div>
                 <button type="submit" class="btn btn-primary">Add</button>
             </form>
@@ -65,7 +68,8 @@
                 </div>
                 <div class="form-group">
                     <label for="newPatientPassword">Password</label>
-                    <input type="text" class="form-control" id="newPatientPassword" v-model="editPatientData.password">
+                    <input type="password" class="form-control" id="newPatientPassword"
+                        v-model="editPatientData.password">
                 </div>
                 <button type="submit" class="btn btn-primary m-1">Update</button>
             </form>
@@ -87,6 +91,7 @@ export default {
     data() {
         return {
             patients: [],
+            user: '',
             showAddPatientModal: false,
             showEditPatientModal: false,
             newPatientData: {
@@ -105,8 +110,22 @@ export default {
             }
         };
     },
+    computed: {
+        isAdmin() {
+            return this.user && this.user.userType === 'admin';
+        },
+        isDoctor() {
+            return this.user && this.user.userType === 'doctor';
+        },
+        isPatient() {
+            return this.user && this.user.userType === 'patient';
+        },
+    },
     mounted() {
         this.fetchPatient();
+    },
+    created() {
+        this.loadUserFromLocalStorage();
     },
     methods: {
         fetchPatient() {
@@ -181,7 +200,14 @@ export default {
             } catch (error) {
                 console.error('There was an error deleting the product:', error);
             }
-        }
+        },
+        loadUserFromLocalStorage() {
+            const user = localStorage.getItem('user');
+            if (user) {
+                this.user = JSON.parse(user);
+                this.editUserData = { ...this.user };
+            }
+        },
     }
 };
 </script>

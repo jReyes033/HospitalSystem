@@ -10,15 +10,14 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
     public function login(Request $request) {
-        // Validate request data
+
         $validatedData = $request->validate([
             'email' => 'required|string|email|max:191',
             'password' => 'required|string|min:8|max:191',
         ]);
     
-        // Attempt to authenticate the user
+
         if (Auth::attempt($validatedData)) {
-            // Authentication was successful
             $user = Auth::user();
             $token = $user->createToken('sanctum-token')->plainTextToken;
     
@@ -39,11 +38,13 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        // Get the currently authenticated user's token and delete it
-        $request->user()->currentAccessToken()->delete();
-
-        // Return a response indicating that the logout was successful
-        return response()->json(['message' => 'Logged out successfully'], 200);
+        if ($user = $request->user()) {
+            $user->currentAccessToken()->delete();
+    
+            return response()->json(['message' => 'Logged out successfully'], 200);
+        }
+    
+        return response()->json(['message' => 'No authenticated user'], 200);
     }
 
     public function register(Request $request) {

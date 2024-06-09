@@ -11,11 +11,18 @@ class MedicalRecordController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $medicalRecords = MedicalRecord::leftjoin('users as patients', 'medical_records.patientID', '=', 'patients.id')
-        ->select('medical_records.*', 'patients.name as PatientName')
-        ->get();
+        $patientID = $request->input('patientID');
+
+        $query = MedicalRecord::leftjoin('users as patients', 'medical_records.patientID', '=', 'patients.id')
+        ->select('medical_records.*', 'patients.name as PatientName');
+
+        if ($patientID) {
+            $query->where('medical_records.patientID', $patientID);
+        }
+
+        $medicalRecords = $query->get();
 
         if ($medicalRecords->count() > 0) {
             return response()->json([

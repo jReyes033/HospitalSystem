@@ -1,7 +1,8 @@
 <template>
     <DashboardView />
     <div class="hello">
-        <h1>Appoinment Management</h1>
+        <h1 v-if="isAdmin">Appoinment Management</h1>
+        <h1 v-if="isDoctor || isPatient">My Appointments</h1>
         <button class="btn btn-info btn-sm m-1" @click="addAppointment()">Add an Appointment</button>
         <table class="table table-striped table-bordered">
             <thead class="thead-dark">
@@ -22,8 +23,8 @@
                     <td>{{ formatDateTime(appointment.time) }}</td>
                     <td>{{ appointment.status }}</td>
                     <td>
-                        <button v-if="isAdmin || isDoctor || isPatient" class="btn btn-warning btn-sm m-1" @click="editAppointment(appointment)">Edit</button>
-                        <button v-if="isAdmin || isDoctor" class="btn btn-danger btn-sm m-1"
+                        <button class="btn btn-warning btn-sm m-1" @click="editAppointment(appointment)">Edit</button>
+                        <button class="btn btn-danger btn-sm m-1"
                             @click="deleteAppointment(appointment)">Delete</button>
                     </td>
                 </tr>
@@ -346,6 +347,11 @@ export default {
                 });
         },
         addAppointment() {
+            if (this.isDoctor) {
+                this.newAppointmentData.doctorID = this.user.id;
+            } else if (this.isPatient) {
+                this.newAppointmentData.patientID = this.user.id;
+            }
             this.showAddAppointmentModal = true;
         },
         async postAppointment() {
