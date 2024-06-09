@@ -1,4 +1,5 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router';
+import DoctorManagement from '../components/DoctorManagement.vue';
 
 const routes = [
   {
@@ -12,9 +13,15 @@ const routes = [
     component: () => import('../views/RegisterView.vue')
   },
   {
-    path: '/doctors',
-    name: 'doctors',
-    component: () => import('../views/DoctorView.vue'),
+    path: '/doctor',
+    name: 'DoctorManagement',
+    component: DoctorManagement,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: () => import('../views/DashboardView.vue'),
     meta: { requiresAuth: true }
   },
   // Add other protected routes here
