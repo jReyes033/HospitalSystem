@@ -11,23 +11,35 @@ class AppointmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $appointments = Appointment::join('users as patients', 'appointments.patientID', '=', 'patients.id')
-        ->join('users as doctors', 'appointments.doctorID', '=', 'doctors.id')
-        ->select('appointments.*','patients.name as PatientName','doctors.name as DoctorName')
-        ->get();
+        $doctorID = $request->input('doctorID');
+        $patientID = $request->input('patientID');
+
+        $query = Appointment::join('users as patients', 'appointments.patientID', '=', 'patients.id')
+            ->join('users as doctors', 'appointments.doctorID', '=', 'doctors.id')
+            ->select('appointments.*', 'patients.name as PatientName', 'doctors.name as DoctorName');
+
+        if ($doctorID) {
+            $query->where('appointments.doctorID', $doctorID);
+        }
+
+        if ($patientID) {
+            $query->where('appointments.patientID', $patientID);
+        }
+
+        $appointments = $query->get();
 
         if ($appointments->count() > 0) {
             return response()->json([
                 'status' => 200,
                 'Appointments' => $appointments
-            ],200);
+            ], 200);
         } else {
             return response()->json([
                 'status' => 404,
                 'Message' => 'No Records Found'
-            ],404);
+            ], 404);
         }
     }
 
@@ -44,20 +56,22 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = Validator::make($request->all(), 
-        [
-            'time' => 'required',
-            'patientID' => 'required',
-            'doctorID' => 'required',
-            'status' => 'required'
-        ]);
+        $validate = Validator::make(
+            $request->all(),
+            [
+                'time' => 'required',
+                'patientID' => 'required',
+                'doctorID' => 'required',
+                'status' => 'required'
+            ]
+        );
 
         if ($validate->fails()) {
             return response()->json([
                 'status' => 400,
                 'errors' => $validate->messages()
             ], 400);
-        } 
+        }
 
         try {
             Appointment::create([
@@ -113,20 +127,22 @@ class AppointmentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validate = Validator::make($request->all(), 
-        [
-            'time' => 'required',
-            'patientID' => 'required',
-            'doctorID' => 'required',
-            'status' => 'required'
-        ]);
+        $validate = Validator::make(
+            $request->all(),
+            [
+                'time' => 'required',
+                'patientID' => 'required',
+                'doctorID' => 'required',
+                'status' => 'required'
+            ]
+        );
 
         if ($validate->fails()) {
             return response()->json([
                 'status' => 400,
                 'errors' => $validate->messages()
             ], 400);
-        } 
+        }
 
         try {
             $appointment = Appointment::find($id);

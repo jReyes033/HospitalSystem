@@ -1,5 +1,5 @@
 <template>
-    <DashboardView/>
+    <DashboardView />
     <div class="hello">
         <h1>Appoinment Management</h1>
         <button class="btn btn-info btn-sm m-1" @click="addAppointment()">Add an Appointment</button>
@@ -7,8 +7,8 @@
             <thead class="thead-dark">
                 <tr>
                     <th>ID</th>
-                    <th>Patient</th>
-                    <th>Doctor</th>
+                    <th v-if="isDoctor || isAdmin">Patient</th>
+                    <th v-if="isPatient || isAdmin">Doctor</th>
                     <th>Date / Time</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -17,13 +17,13 @@
             <tbody>
                 <tr v-for="appointment in appointments" :key="appointment.id">
                     <td>{{ appointment.id }}</td>
-                    <td>{{ appointment.PatientName }}</td>
-                    <td>{{ appointment.DoctorName }}</td>
+                    <td v-if="isDoctor || isAdmin">{{ appointment.PatientName }}</td>
+                    <td v-if="isPatient || isAdmin">{{ appointment.DoctorName }}</td>
                     <td>{{ formatDateTime(appointment.time) }}</td>
                     <td>{{ appointment.status }}</td>
                     <td>
-                        <button class="btn btn-warning btn-sm m-1" @click="editAppointment(appointment)">Edit</button>
-                        <button class="btn btn-danger btn-sm m-1"
+                        <button v-if="isAdmin || isDoctor || isPatient" class="btn btn-warning btn-sm m-1" @click="editAppointment(appointment)">Edit</button>
+                        <button v-if="isAdmin || isDoctor" class="btn btn-danger btn-sm m-1"
                             @click="deleteAppointment(appointment)">Delete</button>
                     </td>
                 </tr>
@@ -139,6 +139,7 @@ export default {
             appointments: [],
             patients: [],
             doctors: [],
+            user:'',
             date: '',
             time: '',
             editDate: '',
@@ -198,7 +199,19 @@ export default {
             } else {
                 return '';
             }
-        }
+        },
+        isAdmin() {
+            return this.user && this.user.userType === 'admin';
+        },
+        isDoctor() {
+            return this.user && this.user.userType === 'doctor';
+        },
+        isPatient() {
+            return this.user && this.user.userType === 'patient';
+        },
+    },
+    created() {
+        this.loadUserFromLocalStorage();
     },
     mounted() {
         this.fetchAppointments();
@@ -207,7 +220,8 @@ export default {
     },
     methods: {
         fetchAppointments() {
-            fetch('http://127.0.0.1:8000/api/appointments', {
+            if (this.isAdmin) {
+                fetch('http://127.0.0.1:8000/api/appointments', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -230,6 +244,56 @@ export default {
                         console.error('Error', err.message);
                     }
                 });
+            } else if (this.isDoctor) {
+                fetch('http://127.0.0.1:8000/api/appointments?doctorID=' + this.user.id, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.appointments = data.Appointments;
+                })
+                .catch(err => {
+                    if (err.response) {
+                        this.error = `Error: ${err.response.data.message}`;
+                        console.error(err.response.data);
+                    } else if (err.request) {
+                        this.error = 'No response from server. Please try again later.';
+                        console.error(err.request);
+                    } else {
+                        this.error = 'Request error. Please check your input and try again.';
+                        console.error('Error', err.message);
+                    }
+                });
+            } else if (this.isPatient) {
+                fetch('http://127.0.0.1:8000/api/appointments?patientID=' + this.user.id, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.appointments = data.Appointments;
+                })
+                .catch(err => {
+                    if (err.response) {
+                        this.error = `Error: ${err.response.data.message}`;
+                        console.error(err.response.data);
+                    } else if (err.request) {
+                        this.error = 'No response from server. Please try again later.';
+                        console.error(err.request);
+                    } else {
+                        this.error = 'Request error. Please check your input and try again.';
+                        console.error('Error', err.message);
+                    }
+                });
+            }
+            
         },
         fetchPatients() {
             fetch('http://127.0.0.1:8000/api/patient', {
@@ -345,7 +409,13 @@ export default {
             const formattedDate = datetime.toLocaleDateString();
             const formattedTime = datetime.toLocaleTimeString();
             return `${formattedDate} / ${formattedTime}`;
-        }
+        },
+        loadUserFromLocalStorage() {
+            const user = localStorage.getItem('user');
+            if (user) {
+                this.user = JSON.parse(user);
+            }
+        },
     }
 };
 </script>

@@ -53,6 +53,11 @@ export default {
           userType: this.userType
         });
         console.log(response.data); // Log the response for debugging
+
+        this.name = '';
+        this.email = '';
+        this.password = '';
+        this.userType = '';
       } catch (err) {
         if (err.response) {
           this.error = `Error: ${err.response.data.message}`;
