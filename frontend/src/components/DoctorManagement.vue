@@ -200,6 +200,8 @@ export default {
   border-radius: 8px;
   background-color: #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-left: 20%;
+  margin-right: 5%;
 }
 
 .hello h1 {
