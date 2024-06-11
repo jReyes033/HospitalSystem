@@ -22,6 +22,7 @@
 
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
   data() {
@@ -43,6 +44,12 @@ export default {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
         this.$router.push('/dashboard'); // Redirect to dashboard or another page
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'You have successfully logged in.',
+          confirmButtonText: 'OK'
+        });
       } catch (err) {
         this.error = 'Login failed. Please check your credentials and try again.';
       }
