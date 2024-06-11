@@ -1,37 +1,46 @@
 <template>
-  <div class="registration-container">
-    <h1>Registration Form</h1>
-    <form @submit.prevent="register" class="registration-form">
-      <div class="form-group">
-        <label for="name">Name:</label>
-        <input type="text" v-model="name" id="name" required>
+  <div class="container">
+    <div class="row justify-content-center mt-5">
+      <div class="col-md-6">
+        <div class="registration-container">
+          <h1 class="registration-heading">Registration Form</h1>
+          <form @submit.prevent="register" class="registration-form">
+            <div class="form-group">
+              <label for="name" class="form-label">Name:</label>
+              <input type="text" v-model="name" id="name" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="email" class="form-label">Email:</label>
+              <input type="text" v-model="email" id="email" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="password" class="form-label">Password:</label>
+              <input type="password" v-model="password" id="password" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label for="userType" class="form-label">User Type:</label>
+              <select id="userType" v-model="userType" class="form-select" required>
+                <option value="admin">I am an Administrator</option>
+                <option value="doctor">I am a Doctor</option>
+                <option value="patient">I am a Patient</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Register</button>
+          </form>
+          <div v-if="error" class="error">{{ error }}</div>
+          <router-link to="/login" class="login-link">
+            <span style="color: black;">Already have an account? </span>
+            <span style="color: blue; text-decoration: underline; font-weight: bold;">Login</span>
+          </router-link>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="text" v-model="email" id="email" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" v-model="password" id="password" required>
-      </div>
-      <div class="form-group">
-        <label for="userType">User Type:</label>
-        <select id="userType" v-model="userType" required>
-          <option value="admin">I am an Administrator</option>
-          <option value="doctor">I am a Doctor</option>
-          <option value="patient">I am a Patient</option>
-        </select>
-      </div>
-      <button type="submit">Register</button>
-    </form>
-    <div v-if="error" class="error">{{ error }}</div>
-    <router-link to="/login">Login</router-link>
+    </div>
   </div>
 </template>
 
-
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
   data() {
@@ -54,6 +63,13 @@ export default {
         });
         console.log(response.data); // Log the response for debugging
 
+        Swal.fire({
+          icon: 'success',
+          title: 'Registration Successful',
+          text: 'You have successfully registered.',
+          confirmButtonText: 'OK'
+        });
+
         this.name = '';
         this.email = '';
         this.password = '';
@@ -73,7 +89,6 @@ export default {
     }
   }
 };
-
 </script>
 
 <style>
@@ -82,41 +97,65 @@ export default {
 }
 
 .registration-container {
-  max-width: 400px;
-  margin: 0 auto;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: #fff;
 }
 
-.registration-form {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  grid-gap: 10px;
+.registration-heading {
+  margin-bottom: 20px;
+  font-size: 24px;
+  text-align: center;
 }
 
 .form-group {
-  display: contents;
+  margin-bottom: 20px;
 }
 
-button {
-  grid-column: span 2;
-  padding: 10px 15px;
-  background-color: #007bff;
-  color: white;
-  border: none;
+.form-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
   border-radius: 4px;
-  cursor: pointer;
 }
 
-button:hover {
+.form-select {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn-primary {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
   background-color: #0056b3;
 }
 
 .error {
-  color: red;
   margin-top: 10px;
   text-align: center;
+}
+
+.login-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
 }
 </style>

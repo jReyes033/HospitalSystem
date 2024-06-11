@@ -1,25 +1,31 @@
 <template>
   <div class="login-container">
-    <h1>Login</h1>
-    <form @submit.prevent="login" class="login-form">
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="text" v-model="email" id="email" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" v-model="password" id="password" required>
-      </div>
-      <button type="submit">Login</button>
-    </form>
-    <div v-if="error" class="error">{{ error }}</div>
-    <router-link to="/register">Register Here</router-link>
+    <div class="login-form">
+      <h1 class="login-heading">Login</h1>
+      <form @submit.prevent="login">
+        <div class="form-group">
+          <label for="email" class="form-label">Email:</label>
+          <input type="email" v-model="email" id="email" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="password" class="form-label">Password:</label>
+          <input type="password" v-model="password" id="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+      </form>
+      <div v-if="error" class="error">{{ error }}</div>
+      <router-link to="/register" class="register-link">
+        <span style="color: black;">Don't have an account? </span>
+        <span style="color: blue; text-decoration: underline; font-weight: bold;">Register Here</span>
+      </router-link>
+    </div>
   </div>
 </template>
 
 
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
   data() {
@@ -41,6 +47,12 @@ export default {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
         this.$router.push('/dashboard'); // Redirect to dashboard or another page
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'You have successfully logged in.',
+          confirmButtonText: 'OK'
+        });
       } catch (err) {
         this.error = 'Login failed. Please check your credentials and try again.';
       }
@@ -51,35 +63,57 @@ export default {
 
 <style>
 .login-container {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 .login-form {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  grid-gap: 10px;
+  max-width: 400px;
+  width: 100%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.login-heading {
+  margin-bottom: 20px;
+  font-size: 24px;
+  text-align: center;
 }
 
 .form-group {
-  display: contents;
+  margin-bottom: 20px;
 }
 
-button {
-  grid-column: span 2;
-  padding: 10px 15px;
+.form-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn-primary {
   background-color: #007bff;
-  color: white;
+  color: #fff;
   border: none;
   border-radius: 4px;
+  padding: 10px;
+  font-size: 16px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-button:hover {
+.btn-primary:hover {
   background-color: #0056b3;
 }
 
@@ -87,5 +121,14 @@ button:hover {
   color: red;
   margin-top: 10px;
   text-align: center;
+}
+
+.register-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
 }
 </style>
