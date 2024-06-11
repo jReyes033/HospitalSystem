@@ -37,6 +37,7 @@
 
 <script>
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
   data() {
@@ -58,6 +59,13 @@ export default {
           userType: this.userType
         });
         console.log(response.data); // Log the response for debugging
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Registration Successful',
+          text: 'You have successfully registered.',
+          confirmButtonText: 'OK'
+        });
 
         this.name = '';
         this.email = '';
