@@ -1,21 +1,50 @@
 <template>
-  <nav>
-    <router-link v-if="isAdmin" to="/doctors">Doctor Management |</router-link>
-    <router-link v-if="isAdmin" to="/patients"> Patient Management |</router-link>
-    <router-link v-if="isAdmin" to="/appointments"> Appointment Management |</router-link>
-    <router-link v-if="isAdmin" to="/medicalrecords"> Medical Record Management |</router-link>
-    <router-link v-if="isAdmin" to="/users"> Admin View |</router-link>
-
-
-    <router-link v-if="isDoctor" to="/patients"> My Patients |</router-link>
-    <router-link v-if="isDoctor || isPatient" to="/appointments"> My Appointments |</router-link>
-    <router-link v-if="isDoctor || isPatient" to="/medicalrecords"> My Medical Records |</router-link>
-
-    <!-- <router-link v-if="isDoctor || isPatient">My Profile</router-link> -->
-    <router-link to="/logout"> Logout |</router-link>
-    <br>
-    <button type="submit" class="btn btn-primary m-1" @click="viewprofile()">My Profile</button>
-  </nav>
+  <div class="row">
+    <!-- Side Panel -->
+    <div class="col-md-3">
+      <nav class="custom-sidebar d-flex flex-column justify-content-between">
+        <div>
+          <div class="sidebar-header">
+            <h3 class="text-uppercase">Dashboard</h3>
+          </div>
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <router-link v-if="isAdmin" class="nav-link" to="/doctors">Doctor Management</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link v-if="isAdmin" class="nav-link" to="/patients">Patient Management</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link v-if="isAdmin" class="nav-link" to="/appointments">Appointment Management</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link v-if="isAdmin" class="nav-link" to="/medicalrecords">Medical Record Management</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link v-if="isAdmin" class="nav-link" to="/users">Admin View</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link v-if="isDoctor" class="nav-link" to="/patients">My Patients</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link v-if="isDoctor || isPatient" class="nav-link" to="/appointments">My Appointments</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link v-if="isDoctor || isPatient" class="nav-link" to="/medicalrecords">My Medical Records</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/logout">Logout</router-link>
+            </li>
+          </ul>
+        </div>
+        <button type="submit" class="btn btn-primary m-1" @click="viewprofile()">My Profile</button>
+      </nav>
+    </div>
+    <!-- Main Content -->
+    <div class="col-md-9">
+      <router-view />
+    </div>
+  </div>
 
   <Modal v-if="showeditUserModal" @close="showeditUserModal = false">
     <template v-slot:header>
@@ -47,8 +76,6 @@
       </form>
     </template>
   </Modal>
-
-  <router-view />
 </template>
 
 <script>
@@ -112,3 +139,39 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+  .custom-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #343a40;
+    color: #fff;
+  }
+  .custom-sidebar .sidebar-header {
+    padding: 20px;
+    text-align: center;
+  }
+  .custom-sidebar h3 {
+    margin-bottom: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+  }
+  .custom-sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.75);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .custom-sidebar .nav-link:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1); 
+  }
+  .custom-sidebar .btn-primary {
+    width: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+</style>
