@@ -14,7 +14,10 @@
         <button type="submit" class="btn btn-primary btn-block">Login</button>
       </form>
       <div v-if="error" class="error">{{ error }}</div>
-      <router-link to="/register" class="register-link">Register Here</router-link>
+      <router-link to="/register" class="register-link">
+        <span style="color: black;">Don't have an account? </span>
+        <span style="color: blue;">Register Here</span>
+      </router-link>
     </div>
   </div>
 </template>
