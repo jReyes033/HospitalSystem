@@ -16,7 +16,7 @@
       <div v-if="error" class="error">{{ error }}</div>
       <router-link to="/register" class="register-link">
         <span style="color: black;">Don't have an account? </span>
-        <span style="color: blue;">Register Here</span>
+        <span style="color: blue; text-decoration: underline; font-weight: bold;">Register Here</span>
       </router-link>
     </div>
   </div>
