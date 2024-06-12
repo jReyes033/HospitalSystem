@@ -24,13 +24,13 @@
               <router-link v-if="isAdmin" class="nav-link" to="/users">Admin View</router-link>
             </li>
             <li class="nav-item">
-              <router-link v-if="isDoctor" class="nav-link" to="/patients">My Patients</router-link>
+              <router-link v-if="isDoctor" class="nav-link" to="/patients">Patients</router-link>
             </li>
             <li class="nav-item">
-              <router-link v-if="isDoctor || isPatient" class="nav-link" to="/appointments">My Appointments</router-link>
+              <router-link v-if="isDoctor || isPatient" class="nav-link" to="/appointments">Appointments</router-link>
             </li>
             <li class="nav-item">
-              <router-link v-if="isDoctor || isPatient" class="nav-link" to="/medicalrecords">My Medical Records</router-link>
+              <router-link v-if="isDoctor || isPatient" class="nav-link" to="/medicalrecords">Medical Records</router-link>
             </li>
           </ul>
         </div>
@@ -151,12 +151,8 @@ export default {
   padding: 20px;
   overflow-x: hidden;
   overflow-y: auto;
-  background: linear-gradient(to bottom, #343a40, #1e2124);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  transition: box-shadow 0.3s ease; 
-}
-.custom-sidebar:hover {
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  background-color: #343a40;
+  color: #fff;
 }
 .custom-sidebar .sidebar-header {
   padding: 20px;
@@ -166,21 +162,22 @@ export default {
   margin-bottom: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: bold;
-  color: #fff;
 }
 .custom-sidebar .nav-link {
   color: rgba(255, 255, 255, 0.75);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  transition: color 0.3s ease;
 }
 .custom-sidebar .nav-link:hover {
   color: #fff;
   background-color: rgba(255, 255, 255, 0.1);
 }
-.custom-sidebar .btn {
+.custom-sidebar .btn-primary {
   width: 100%;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  transition: background-color 0.3s ease;
+}
+.custom-sidebar .btn-secondary {
+  width: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 .custom-sidebar .mt-auto {
   margin-top: auto;
