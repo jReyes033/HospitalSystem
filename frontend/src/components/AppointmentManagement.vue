@@ -25,7 +25,7 @@
                     <td>
                         <button class="btn btn-warning btn-sm m-1" @click="editAppointment(appointment)">Edit</button>
                         <button class="btn btn-danger btn-sm m-1"
-                            @click="deleteAppointment(appointment)">Delete</button>
+                            @click="deleteAppointment(appointment)">Cancel</button>
                     </td>
                 </tr>
             </tbody>
@@ -77,50 +77,51 @@
     </Modal>
 
     <Modal v-if="showEditAppointmentModal" @close="showEditAppointmentModal = false">
-        <template v-slot:header>
-            <h5>Edit appointment</h5>
-        </template>
-        <template v-slot:body>
-            <form @submit.prevent="updateAppointment()">
-                <div class="form-group">
-                    <label for="patientName">Patient Name</label>
-                    <select id="patientName" class="form-control" v-model="editAppointmentData.patientID" required>
-                        <option value="" disabled>Select Patient</option>
-                        <option v-for="patient in patients" :key="patient.id" :value="patient.id">{{ patient.name }}
-                        </option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="doctorName">Doctor Name</label>
-                    <select id="doctorName" class="form-control" v-model="editAppointmentData.doctorID" required>
-                        <option value="" disabled>Select Doctor</option>
-                        <option v-for="doctor in doctors" :key="doctor.id" :value="doctor.id">{{ doctor.name }}
-                        </option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="appointmentDate">Date</label>
-                    <input type="date" name="appt" id="appointmentDate" v-model="editDate" class="form-control"
-                        required>
-                </div>
-                <div class="form-group">
-                    <label for="appointmentTime">Time</label>
-                    <input type="time" name="appt" id="appointmentTime" v-model="editTime" class="form-control"
-                        required>
-                </div>
-                <div class="form-group">
-                    <label for="Status">Status</label>
-                    <select id="Status" class="form-control" v-model="editAppointmentData.status" required>
-                        <option value="" disabled selected>Status</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Approved">Approved</option>
-                        <option value="Done">Done</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary m-1">Update</button>
-            </form>
-        </template>
-    </Modal>
+    <template v-slot:header>
+        <h5>Edit appointment</h5>
+    </template>
+    <template v-slot:body>
+        <form @submit.prevent="updateAppointment()">
+            <div class="form-group">
+                <label for="patientName">Patient Name</label>
+                <select id="patientName" class="form-control" v-model="editAppointmentData.patientID" :disabled="isDisabled" required>
+                    <option value="" disabled>Select Patient</option>
+                    <option v-for="patient in patients" :key="patient.id" :value="patient.id">{{ patient.name }}
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="doctorName">Doctor Name</label>
+                <select id="doctorName" class="form-control" v-model="editAppointmentData.doctorID" :disabled="isDisabled" required>
+                    <option value="" disabled>Select Doctor</option>
+                    <option v-for="doctor in doctors" :key="doctor.id" :value="doctor.id">{{ doctor.name }}
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="appointmentDate">Date</label>
+                <input type="date" name="appt" id="appointmentDate" v-model="editDate" class="form-control"
+                    required>
+            </div>
+            <div class="form-group">
+                <label for="appointmentTime">Time</label>
+                <input type="time" name="appt" id="appointmentTime" v-model="editTime" class="form-control"
+                    required>
+            </div>
+            <div class="form-group">
+                <label for="Status">Status</label>
+                <select id="Status" class="form-control" v-model="editAppointmentData.status" required>
+                    <option value="" disabled selected>Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Done">Done</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary m-1">Update</button>
+        </form>
+    </template>
+</Modal>
+
 </template>
 
 <script>
@@ -159,7 +160,8 @@ export default {
                 doctorID: '',
                 time: '',
                 status: ''
-            }
+            },
+            isDisabled: true // Add this property
         };
     },
     computed: {
