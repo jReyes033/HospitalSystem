@@ -3,7 +3,7 @@
     <div class="hello">
         <h1 v-if="isAdmin">Appoinment Management</h1>
         <h1 v-if="isDoctor || isPatient">My Appointments</h1>
-        <button class="btn btn-info btn-sm m-1" @click="addAppointment()">Add an Appointment</button>
+        <button v-if="!isAdmin" class="btn btn-info btn-sm m-1" @click="addAppointment()">Add an Appointment</button>
         <table class="table table-striped table-bordered">
             <thead class="thead-dark">
                 <tr>
@@ -123,6 +123,7 @@
 </Modal>
 
 </template>
+
 
 <script>
 import DashboardView from '@/views/DashboardView.vue';
