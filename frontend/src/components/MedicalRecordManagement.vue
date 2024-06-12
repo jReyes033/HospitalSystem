@@ -2,7 +2,7 @@
     <DashboardView />
     <div class="hello">
         <h1>Medical Record Management</h1>
-        <button v-if="!isPatient" class="btn btn-info btn-sm m-1" @click="addMedicalRecord()">Add Medical Record</button>
+        <button v-if="!isPatient && !isAdmin" class="btn btn-info btn-sm m-1" @click="addMedicalRecord()">Add Medical Record</button>
         <table class="table table-striped table-bordered">
             <thead class="thead-dark">
                 <tr>
