@@ -25,7 +25,7 @@
                     <td>
                         <button class="btn btn-warning btn-sm m-1" @click="editAppointment(appointment)">Edit</button>
                         <button class="btn btn-danger btn-sm m-1"
-                            @click="deleteAppointment(appointment)">Cancel</button>
+                            @click="deleteAppointment(appointment)">Cancel Appointment</button>
                     </td>
                 </tr>
             </tbody>
@@ -161,7 +161,7 @@ export default {
                 time: '',
                 status: ''
             },
-            isDisabled: true // Add this property
+            isDisabled: true 
         };
     },
     computed: {
