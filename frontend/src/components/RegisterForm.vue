@@ -20,9 +20,9 @@
             <div class="form-group">
               <label for="userType" class="form-label">User Type:</label>
               <select id="userType" v-model="userType" class="form-select" required>
-                <option value="admin">I am an Administrator</option>
-                <option value="doctor">I am a Doctor</option>
-                <option value="patient">I am a Patient</option>
+                <option value="admin">Administrator</option>
+                <option value="doctor">Doctor</option>
+                <option value="patient">Patient</option>
               </select>
             </div>
             <button type="submit" class="btn btn-primary btn-block">Register</button>
