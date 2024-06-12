@@ -32,12 +32,13 @@
             <li class="nav-item">
               <router-link v-if="isDoctor || isPatient" class="nav-link" to="/medicalrecords">My Medical Records</router-link>
             </li>
-            <li class="nav-item">
-              <router-link class="nav-link" to="/logout">Logout</router-link>
-            </li>
           </ul>
         </div>
-        <button type="submit" class="btn btn-primary m-1" @click="viewprofile()">My Profile</button>
+        <div>
+          <button v-if="isDoctor || isAdmin" type="submit" class="btn btn-primary m-1" @click="viewprofile()">My Profile</button>
+          <router-link v-if="isDoctor || isAdmin" class="btn btn-primary m-1" to="/logout">Logout</router-link>
+          <router-link v-if="isPatient" class="btn btn-primary m-1 mt-auto" to="/logout">Logout</router-link>
+        </div>
       </nav>
     </div>
     <!-- Main Content -->
@@ -127,51 +128,54 @@ export default {
       this.showeditUserModal = true;
     },
     async updateUser() {
-            this.editUserData.updated_at = new Date().toISOString();
-            await axios.put(`http://127.0.0.1:8000/api/doctor/${this.editUserData.id}`, this.editUserData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                }
-            });
-            this.showeditUserModal = false;
-        },
+      this.editUserData.updated_at = new Date().toISOString();
+      await axios.put(`http://127.0.0.1:8000/api/doctor/${this.editUserData.id}`, this.editUserData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        }
+      });
+      this.showeditUserModal = false;
+    },
   },
 };
 </script>
 
 <style scoped>
-  .custom-sidebar {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 100;
-    padding: 20px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    background-color: #343a40;
-    color: #fff;
-  }
-  .custom-sidebar .sidebar-header {
-    padding: 20px;
-    text-align: center;
-  }
-  .custom-sidebar h3 {
-    margin-bottom: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-weight: bold;
-  }
-  .custom-sidebar .nav-link {
-    color: rgba(255, 255, 255, 0.75);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  .custom-sidebar .nav-link:hover {
-    color: #fff;
-    background-color: rgba(255, 255, 255, 0.1); 
-  }
-  .custom-sidebar .btn-primary {
-    width: 100%;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
+.custom-sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  padding: 20px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: #343a40;
+  color: #fff;
+}
+.custom-sidebar .sidebar-header {
+  padding: 20px;
+  text-align: center;
+}
+.custom-sidebar h3 {
+  margin-bottom: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
+}
+.custom-sidebar .nav-link {
+  color: rgba(255, 255, 255, 0.75);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.custom-sidebar .nav-link:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.custom-sidebar .btn-primary {
+  width: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.custom-sidebar .mt-auto {
+  margin-top: auto;
+}
 </style>
