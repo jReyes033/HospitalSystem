@@ -70,9 +70,8 @@
           <select class="form-control" id="userType" v-model="editUserData.userType" required>
             <option value="admin">Administrator</option>
             <option value="doctor">Doctor</option>
-            <option value="patient">Patient</option>
           </select>
-        </div>
+        </div>        
         <button type="submit" class="btn btn-primary m-1">Update</button>
       </form>
     </template>
