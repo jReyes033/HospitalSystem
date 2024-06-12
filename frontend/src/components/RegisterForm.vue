@@ -29,8 +29,7 @@
           </form>
           <div v-if="error" class="error">{{ error }}</div>
           <router-link to="/login" class="login-link">
-            <span style="color: black;">Already have an account? </span>
-            <span style="color: blue; text-decoration: underline; font-weight: bold;">Login</span>
+            <span>Already have an account? <span class="login-link-highlight">Login</span></span>
           </router-link>
         </div>
       </div>
@@ -97,16 +96,17 @@ export default {
 }
 
 .registration-container {
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fff;
+  padding: 40px;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #ffffff, #e0e0e0);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .registration-heading {
-  margin-bottom: 20px;
-  font-size: 24px;
+  margin-bottom: 30px;
+  font-size: 28px;
   text-align: center;
+  color: #333;
 }
 
 .form-group {
@@ -116,26 +116,29 @@ export default {
 .form-label {
   font-weight: bold;
   margin-bottom: 5px;
+  color: #444;
 }
 
 .form-control {
   width: 100%;
-  padding: 10px;
+  padding: 15px;
   font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 6px;
+  background-color: #f8f8f8;
 }
 
 .form-select {
   width: 100%;
-  padding: 10px;
+  padding: 15px;
   font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 6px;
+  background-color: #f8f8f8;
 }
 
 .btn-primary {
-  padding: 10px;
+  padding: 15px;
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -146,7 +149,7 @@ export default {
 }
 
 .error {
-  margin-top: 10px;
+  margin-top: 20px;
   text-align: center;
 }
 
@@ -157,5 +160,9 @@ export default {
   text-decoration: none;
   color: #007bff;
   font-weight: bold;
+}
+
+.login-link-highlight {
+  color: #0056b3;
 }
 </style>

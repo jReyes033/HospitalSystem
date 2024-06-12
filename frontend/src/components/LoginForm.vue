@@ -15,13 +15,11 @@
       </form>
       <div v-if="error" class="error">{{ error }}</div>
       <router-link to="/register" class="register-link">
-        <span style="color: black;">Don't have an account? </span>
-        <span style="color: blue; text-decoration: underline; font-weight: bold;">Register Here</span>
+        <span>Don't have an account? <span class="register-link-highlight">Register Here</span></span>
       </router-link>
     </div>
   </div>
 </template>
-
 
 <script>
 import axios from 'axios';
@@ -72,16 +70,17 @@ export default {
 .login-form {
   max-width: 400px;
   width: 100%;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fff;
+  padding: 40px;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #ffffff, #e0e0e0);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 .login-heading {
-  margin-bottom: 20px;
-  font-size: 24px;
+  margin-bottom: 30px;
+  font-size: 28px;
   text-align: center;
+  color: #333;
 }
 
 .form-group {
@@ -92,22 +91,24 @@ export default {
   display: block;
   font-weight: bold;
   margin-bottom: 5px;
+  color: #444;
 }
 
 .form-control {
   width: 100%;
-  padding: 10px;
+  padding: 15px;
   font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 6px;
+  background-color: #f8f8f8;
 }
 
 .btn-primary {
   background-color: #007bff;
   color: #fff;
   border: none;
-  border-radius: 4px;
-  padding: 10px;
+  border-radius: 6px;
+  padding: 15px;
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -119,7 +120,7 @@ export default {
 
 .error {
   color: red;
-  margin-top: 10px;
+  margin-top: 20px;
   text-align: center;
 }
 
@@ -130,5 +131,9 @@ export default {
   text-decoration: none;
   color: #007bff;
   font-weight: bold;
+}
+
+.register-link-highlight {
+  color: #0056b3;
 }
 </style>
