@@ -36,8 +36,8 @@
         </div>
         <div>
           <button v-if="isDoctor || isAdmin" type="submit" class="btn btn-primary m-1" @click="viewprofile()">My Profile</button>
-          <router-link v-if="isDoctor || isAdmin" class="btn btn-primary m-1" to="/logout">Logout</router-link>
-          <router-link v-if="isPatient" class="btn btn-primary m-1 mt-auto" to="/logout">Logout</router-link>
+          <router-link v-if="isDoctor || isAdmin" class="btn btn-secondary m-1" to="/logout">Logout</router-link>
+          <router-link v-if="isPatient" class="btn btn-secondary m-1 mt-auto" to="/logout">Logout</router-link>
         </div>
       </nav>
     </div>
@@ -65,7 +65,7 @@
           <label for="password">Password:</label>
           <input class="form-control" type="password" v-model="editUserData.password" id="password" required>
         </div>
-        <div class="form-group">
+        <div class="form-group" v-if="isAdmin">
           <label for="userType">User Type:</label>
           <select class="form-control" id="userType" v-model="editUserData.userType" required>
             <option value="admin">Administrator</option>
@@ -78,6 +78,7 @@
     </template>
   </Modal>
 </template>
+
 
 <script>
 import Modal from '@/components/PopUpModal.vue';
@@ -172,6 +173,10 @@ export default {
   background-color: rgba(255, 255, 255, 0.1);
 }
 .custom-sidebar .btn-primary {
+  width: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+.custom-sidebar .btn-secondary {
   width: 100%;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
