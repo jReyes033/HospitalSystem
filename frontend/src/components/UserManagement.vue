@@ -95,112 +95,153 @@
 <script>
 import Modal from './PopUpModal.vue';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import DashboardView from '@/views/DashboardView.vue';
 
 export default {
-    name: 'DoctorManagement',
-    components: {
-        Modal,
-        DashboardView
+  name: 'DoctorManagement',
+  components: {
+    Modal,
+    DashboardView
+  },
+  data() {
+    return {
+      users: [],
+      showAddUserModal: false,
+      showeditUserModal: false,
+      newUserData: {
+        name: '',
+        email: '',
+        password: '',
+        userType: ''
+      },
+      editUserData: {
+        id: '',
+        name: '',
+        email: '',
+        password: '',
+        userType: '',
+        updated_at: ''
+      }
+    };
+  },
+  mounted() {
+    this.fetchAllUsers();
+  },
+  methods: {
+    fetchAllUsers() {
+      fetch('http://127.0.0.1:8000/api/user', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          this.users = data.UserAccounts;
+        })
+        .catch(err => {
+          if (err.response) {
+            this.error = `Error: ${err.response.data.message}`;
+            console.error(err.response.data);
+          } else if (err.request) {
+            this.error = 'No response from server. Please try again later.';
+            console.error(err.request);
+          } else {
+            this.error = 'Request error. Please check your input and try again.';
+            console.error('Error', err.message);
+          }
+        });
     },
-    data() {
-        return {
-            users: [],
-            showAddUserModal: false,
-            showeditUserModal: false,
-            newUserData: {
-                name: '',
-                email: '',
-                password: '',
-                userType: ''
-            },
-            editUserData: {
-                id: '',
-                name: '',
-                email: '',
-                password: '',
-                userType: '',
-                updated_at: ''
-            }
-        };
+    addDoctor() {
+      this.showAddUserModal = true;
     },
-    mounted() {
-        this.fetchAllUsers();
+    async postUser() {
+      try {
+        await axios.post('http://127.0.0.1:8000/api/user', this.newUserData, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        });
+        this.showAddUserModal = false;
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'User has been added successfully.',
+          confirmButtonText: 'OK'
+        });
+      } catch (error) {
+        console.error('There was an error adding the user:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'There was an error adding the user. Please try again.',
+          confirmButtonText: 'OK'
+        });
+      }
+      this.fetchAllUsers();
     },
-    methods: {
-        fetchAllUsers() {
-            fetch('http://127.0.0.1:8000/api/user', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    this.users = data.UserAccounts;
-                })
-                .catch(err => {
-                    if (err.response) {
-                        this.error = `Error: ${err.response.data.message}`;
-                        console.error(err.response.data);
-                    } else if (err.request) {
-                        this.error = 'No response from server. Please try again later.';
-                        console.error(err.request);
-                    } else {
-                        this.error = 'Request error. Please check your input and try again.';
-                        console.error('Error', err.message);
-                    }
-                });
-        },
-        addDoctor() {
-            this.showAddUserModal = true;
-        },
-        async postUser() {
-            try {
-                await axios.post('http://127.0.0.1:8000/api/user', this.newUserData, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + localStorage.getItem('token')
-                    }
-                });
-                this.showAddUserModal = false;
-            } catch (error) {
-                console.error('There was an error adding the product:', error);
-            }
-            this.fetchAllUsers();
-        },
-        editUser(user) {
-            this.editUserData = { ...user };
-            this.showeditUserModal = true;
-        },
-        async updateUser() {
-            this.editUserData.updated_at = new Date().toISOString();
-            await axios.put(`http://127.0.0.1:8000/api/doctor/${this.editUserData.id}`, this.editUserData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                }
-            });
-            this.showeditUserModal = false;
-            this.fetchAllUsers();
-        },
-        async deleteUser(doctor) {
-            const index = this.doctors.findIndex(d => d.id === doctor.id);
-            if (index !== -1) {
-                this.doctors.splice(index, 1);
-            }
-            try {
-                await axios.delete(`http://127.0.0.1:8000/api/doctor/${doctor.id}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + localStorage.getItem('token')
-                    }
-                });
-            } catch (error) {
-                console.error('There was an error deleting the product:', error);
-            }
-        }
+    editUser(user) {
+      this.editUserData = { ...user };
+      this.showeditUserModal = true;
+    },
+    async updateUser() {
+      this.editUserData.updated_at = new Date().toISOString();
+      try {
+        await axios.put(`http://127.0.0.1:8000/api/user/${this.editUserData.id}`, this.editUserData, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        });
+        this.showeditUserModal = false;
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'User has been updated successfully.',
+          confirmButtonText: 'OK'
+        });
+      } catch (error) {
+        console.error('There was an error updating the user:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'There was an error updating the user. Please try again.',
+          confirmButtonText: 'OK'
+        });
+      }
+      this.fetchAllUsers();
+    },
+    async deleteUser(user) {
+      const index = this.users.findIndex(u => u.id === user.id);
+      if (index !== -1) {
+        this.users.splice(index, 1);
+      }
+      try {
+        await axios.delete(`http://127.0.0.1:8000/api/user/${user.id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        });
+        Swal.fire({
+          icon: 'success',
+          title: 'Deleted!',
+          text: 'User has been deleted successfully.',
+          confirmButtonText: 'OK'
+        });
+      } catch (error) {
+        console.error('There was an error deleting the user:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'There was an error deleting the user. Please try again.',
+          confirmButtonText: 'OK'
+        });
+      }
     }
+  }
 };
 </script>

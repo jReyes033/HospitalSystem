@@ -13,7 +13,6 @@
         </div>
         <button type="submit" class="btn btn-primary btn-block">Login</button>
       </form>
-      <div v-if="error" class="error">{{ error }}</div>
       <router-link to="/register" class="register-link">
         <span>Don't have an account? <span class="register-link-highlight">Register Here</span></span>
       </router-link>
@@ -52,7 +51,12 @@ export default {
           confirmButtonText: 'OK'
         });
       } catch (err) {
-        this.error = 'Login failed. Please check your credentials and try again.';
+        Swal.fire({
+          icon: 'error',
+          title: 'Login Failed',
+          text: 'Invalid credentials. Please check your email and password and try again.',
+          confirmButtonText: 'OK'
+        });
       }
     }
   }
@@ -116,12 +120,6 @@ export default {
 
 .btn-primary:hover {
   background-color: #0056b3;
-}
-
-.error {
-  color: red;
-  margin-top: 20px;
-  text-align: center;
 }
 
 .register-link {

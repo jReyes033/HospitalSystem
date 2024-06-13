@@ -80,134 +80,172 @@
 <script>
 import Modal from './PopUpModal.vue';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import DashboardView from '@/views/DashboardView.vue';
 
 export default {
-    name: 'PatientManagement',
-    components: {
-        Modal,
-        DashboardView
+  name: 'PatientManagement',
+  components: {
+    Modal,
+    DashboardView
+  },
+  data() {
+    return {
+      patients: [],
+      user: '',
+      showAddPatientModal: false,
+      showEditPatientModal: false,
+      newPatientData: {
+        name: '',
+        email: '',
+        password: '',
+        userType: 'patient'
+      },
+      editPatientData: {
+        id: '',
+        name: '',
+        email: '',
+        password: '',
+        userType: 'patient',
+        updated_at: ''
+      }
+    };
+  },
+  computed: {
+    isAdmin() {
+      return this.user && this.user.userType === 'admin';
     },
-    data() {
-        return {
-            patients: [],
-            user: '',
-            showAddPatientModal: false,
-            showEditPatientModal: false,
-            newPatientData: {
-                name: '',
-                email: '',
-                password: '',
-                userType: 'patient'
-            },
-            editPatientData: {
-                id: '',
-                name: '',
-                email: '',
-                password: '',
-                userType: 'patient',
-                updated_at: ''
-            }
-        };
+    isDoctor() {
+      return this.user && this.user.userType === 'doctor';
     },
-    computed: {
-        isAdmin() {
-            return this.user && this.user.userType === 'admin';
-        },
-        isDoctor() {
-            return this.user && this.user.userType === 'doctor';
-        },
-        isPatient() {
-            return this.user && this.user.userType === 'patient';
-        },
+    isPatient() {
+      return this.user && this.user.userType === 'patient';
     },
-    mounted() {
-        this.fetchPatient();
+  },
+  mounted() {
+    this.fetchPatient();
+  },
+  created() {
+    this.loadUserFromLocalStorage();
+  },
+  methods: {
+    fetchPatient() {
+      fetch('http://127.0.0.1:8000/api/patient', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          this.patients = data.PatientAccounts;
+        })
+        .catch(err => {
+          if (err.response) {
+            this.error = `Error: ${err.response.data.message}`;
+            console.error(err.response.data);
+          } else if (err.request) {
+            this.error = 'No response from server. Please try again later.';
+            console.error(err.request);
+          } else {
+            this.error = 'Request error. Please check your input and try again.';
+            console.error('Error', err.message);
+          }
+        });
     },
-    created() {
-        this.loadUserFromLocalStorage();
+    addPatient() {
+      this.showAddPatientModal = true;
     },
-    methods: {
-        fetchPatient() {
-            fetch('http://127.0.0.1:8000/api/patient', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    this.patients = data.PatientAccounts;
-                })
-                .catch(err => {
-                    if (err.response) {
-                        this.error = `Error: ${err.response.data.message}`;
-                        console.error(err.response.data);
-                    } else if (err.request) {
-                        this.error = 'No response from server. Please try again later.';
-                        console.error(err.request);
-                    } else {
-                        this.error = 'Request error. Please check your input and try again.';
-                        console.error('Error', err.message);
-                    }
-                });
-        },
-        addPatient() {
-            this.showAddPatientModal = true;
-        },
-        async postPatient() {
-            try {
-                await axios.post('http://127.0.0.1:8000/api/patient', this.newPatientData, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + localStorage.getItem('token')
-                    }
-                });
-                this.showAddPatientModal = false;
-            } catch (error) {
-                console.error('There was an error adding the product:', error);
-            }
-            this.fetchPatient();
-        },
-        editPatient(patient) {
-            this.editPatientData = { ...patient };
-            this.showEditPatientModal = true;
-        },
-        async updatePatient() {
-            this.editPatientData.updated_at = new Date().toISOString();
-            await axios.put(`http://127.0.0.1:8000/api/patient/${this.editPatientData.id}`, this.editPatientData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                }
-            });
-            this.showEditPatientModal = false;
-            this.fetchPatient();
-        },
-        async deletePatient(patient) {
-            const index = this.patients.findIndex(p => p.id === patient.id);
-            if (index !== -1) {
-                this.patients.splice(index, 1);
-            }
-            try {
-                await axios.delete(`http://127.0.0.1:8000/api/patient/${patient.id}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + localStorage.getItem('token')
-                    }
-                });
-            } catch (error) {
-                console.error('There was an error deleting the product:', error);
-            }
-        },
-        loadUserFromLocalStorage() {
-            const user = localStorage.getItem('user');
-            if (user) {
-                this.user = JSON.parse(user);
-                this.editUserData = { ...this.user };
-            }
-        },
-    }
+    async postPatient() {
+      try {
+        await axios.post('http://127.0.0.1:8000/api/patient', this.newPatientData, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        });
+        this.showAddPatientModal = false;
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Patient has been added successfully.',
+          confirmButtonText: 'OK'
+        });
+      } catch (error) {
+        console.error('There was an error adding the patient:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'There was an error adding the patient. Please try again.',
+          confirmButtonText: 'OK'
+        });
+      }
+      this.fetchPatient();
+    },
+    editPatient(patient) {
+      this.editPatientData = { ...patient };
+      this.showEditPatientModal = true;
+    },
+    async updatePatient() {
+      this.editPatientData.updated_at = new Date().toISOString();
+      try {
+        await axios.put(`http://127.0.0.1:8000/api/patient/${this.editPatientData.id}`, this.editPatientData, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        });
+        this.showEditPatientModal = false;
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Patient has been updated successfully.',
+          confirmButtonText: 'OK'
+        });
+      } catch (error) {
+        console.error('There was an error updating the patient:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'There was an error updating the patient. Please try again.',
+          confirmButtonText: 'OK'
+        });
+      }
+      this.fetchPatient();
+    },
+    async deletePatient(patient) {
+      try {
+        await axios.delete(`http://127.0.0.1:8000/api/patient/${patient.id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        });
+        Swal.fire({
+          icon: 'success',
+          title: 'Deleted!',
+          text: 'Patient has been deleted successfully.',
+          confirmButtonText: 'OK'
+        });
+      } catch (error) {
+        console.error('There was an error deleting the patient:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'There was an error deleting the patient. Please try again.',
+          confirmButtonText: 'OK'
+        });
+      }
+      this.fetchPatient();
+    },
+    loadUserFromLocalStorage() {
+      const user = localStorage.getItem('user');
+      if (user) {
+        this.user = JSON.parse(user);
+        this.editUserData = { ...this.user };
+      }
+    },
+  }
 };
 </script>

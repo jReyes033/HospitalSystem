@@ -79,113 +79,151 @@
 <script>
 import Modal from './PopUpModal.vue';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import DashboardView from '@/views/DashboardView.vue';
 
 export default {
-    name: 'DoctorManagement',
-    components: {
-        Modal,
-        DashboardView
+  name: 'DoctorManagement',
+  components: {
+    Modal,
+    DashboardView
+  },
+  data() {
+    return {
+      doctors: [],
+      showAddDoctorModal: false,
+      showEditDoctorModal: false,
+      newDoctorData: {
+        name: '',
+        email: '',
+        password: '',
+        userType: 'doctor'
+      },
+      editDoctorData: {
+        id: '',
+        name: '',
+        email: '',
+        password: '',
+        userType: 'doctor',
+        updated_at: ''
+      }
+    };
+  },
+  mounted() {
+    this.fetchDoctors();
+  },
+  methods: {
+    fetchDoctors() {
+      fetch('http://127.0.0.1:8000/api/doctor', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          this.doctors = data.DoctorAccounts;
+        })
+        .catch(err => {
+          if (err.response) {
+            this.error = `Error: ${err.response.data.message}`;
+            console.error(err.response.data);
+          } else if (err.request) {
+            this.error = 'No response from server. Please try again later.';
+            console.error(err.request);
+          } else {
+            this.error = 'Request error. Please check your input and try again.';
+            console.error('Error', err.message);
+          }
+        });
     },
-    data() {
-        return {
-            doctors: [],
-            showAddDoctorModal: false,
-            showEditDoctorModal: false,
-            newDoctorData: {
-                name: '',
-                email: '',
-                password: '',
-                userType: 'doctor'
-            },
-            editDoctorData: {
-                id: '',
-                name: '',
-                email: '',
-                password: '',
-                userType: 'doctor',
-                updated_at: ''
-            }
-        };
+    addDoctor() {
+      this.showAddDoctorModal = true;
     },
-    mounted() {
-        this.fetchDoctors();
+    async postDoctor() {
+      try {
+        await axios.post('http://127.0.0.1:8000/api/doctor', this.newDoctorData, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        });
+        this.showAddDoctorModal = false;
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Doctor has been added successfully.',
+          confirmButtonText: 'OK'
+        });
+      } catch (error) {
+        console.error('There was an error adding the doctor:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'There was an error adding the doctor. Please try again.',
+          confirmButtonText: 'OK'
+        });
+      }
+      this.fetchDoctors();
     },
-    methods: {
-        fetchDoctors() {
-            fetch('http://127.0.0.1:8000/api/doctor', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                },
-            })
-                .then(response => response.json())
-                .then(data => {
-                    this.doctors = data.DoctorAccounts;
-                })
-                .catch(err => {
-                    if (err.response) {
-                        this.error = `Error: ${err.response.data.message}`;
-                        console.error(err.response.data);
-                    } else if (err.request) {
-                        this.error = 'No response from server. Please try again later.';
-                        console.error(err.request);
-                    } else {
-                        this.error = 'Request error. Please check your input and try again.';
-                        console.error('Error', err.message);
-                    }
-                });
-        },
-        addDoctor() {
-            this.showAddDoctorModal = true;
-        },
-        async postDoctor() {
-            try {
-                await axios.post('http://127.0.0.1:8000/api/doctor', this.newDoctorData, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + localStorage.getItem('token')
-                    }
-                });
-                this.showAddDoctorModal = false;
-            } catch (error) {
-                console.error('There was an error adding the product:', error);
-            }
-            this.fetchDoctors();
-        },
-        editDoctor(doctor) {
-            this.editDoctorData = { ...doctor };
-            this.showEditDoctorModal = true;
-        },
-        async updateDoctor() {
-            this.editDoctorData.updated_at = new Date().toISOString();
-            await axios.put(`http://127.0.0.1:8000/api/doctor/${this.editDoctorData.id}`, this.editDoctorData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + localStorage.getItem('token')
-                }
-            });
-            this.showEditDoctorModal = false;
-            this.fetchDoctors();
-        },
-        async deleteDoctor(doctor) {
-            const index = this.doctors.findIndex(d => d.id === doctor.id);
-            if (index !== -1) {
-                this.doctors.splice(index, 1);
-            }
-            try {
-                await axios.delete(`http://127.0.0.1:8000/api/doctor/${doctor.id}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + localStorage.getItem('token')
-                    }
-                });
-            } catch (error) {
-                console.error('There was an error deleting the product:', error);
-            }
-        }
+    editDoctor(doctor) {
+      this.editDoctorData = { ...doctor };
+      this.showEditDoctorModal = true;
+    },
+    async updateDoctor() {
+      this.editDoctorData.updated_at = new Date().toISOString();
+      try {
+        await axios.put(`http://127.0.0.1:8000/api/doctor/${this.editDoctorData.id}`, this.editDoctorData, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        });
+        this.showEditDoctorModal = false;
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Doctor has been updated successfully.',
+          confirmButtonText: 'OK'
+        });
+      } catch (error) {
+        console.error('There was an error updating the doctor:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'There was an error updating the doctor. Please try again.',
+          confirmButtonText: 'OK'
+        });
+      }
+      this.fetchDoctors();
+    },
+    async deleteDoctor(doctor) {
+      try {
+        await axios.delete(`http://127.0.0.1:8000/api/doctor/${doctor.id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+          }
+        });
+        Swal.fire({
+          icon: 'success',
+          title: 'Deleted!',
+          text: 'Doctor has been deleted successfully.',
+          confirmButtonText: 'OK'
+        });
+      } catch (error) {
+        console.error('There was an error deleting the doctor:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'There was an error deleting the doctor. Please try again.',
+          confirmButtonText: 'OK'
+        });
+      }
+      this.fetchDoctors();
     }
+  }
 };
 </script>
 
